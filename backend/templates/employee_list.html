@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Employees | NexusHR{% endblock %}
+{% block page_title %}Employees{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+  <form class="search-bar" method="get" style="flex:1;margin-bottom:0">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search employees...">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Status</option>
+      <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active</option>
+      <option value="on_leave" {% if status_filter == 'on_leave' %}selected{% endif %}>On Leave</option>
+      <option value="resigned" {% if status_filter == 'resigned' %}selected{% endif %}>Resigned</option>
+      <option value="terminated" {% if status_filter == 'terminated' %}selected{% endif %}>Terminated</option>
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+  </form>
+  <a href="/employees/create/" class="btn btn-primary">+ New Employee</a>
+</div>
+
+<div class="card">
+  {% if records %}
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Email</th><th>Department</th><th>Designation</th><th>Salary</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td><a href="/employees/{{ r.pk }}/edit/"><strong>{{ r.name }}</strong></a></td>
+        <td style="color:var(--muted)">{{ r.email|default:"-" }}</td>
+        <td>{{ r.department|default:"-" }}</td>
+        <td>{{ r.designation|default:"-" }}</td>
+        <td>{{ r.salary|floatformat:2 }}</td>
+        <td class="actions">
+          <a href="/employees/{{ r.pk }}/edit/" class="btn btn-primary btn-sm">Edit</a>
+          <form method="post" action="/employees/{{ r.pk }}/delete/" style="display:inline" onsubmit="return confirm('Delete?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Del</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No employees found.</p>
+    <a href="/employees/create/" class="btn btn-primary" style="margin-top:1rem">Create Employee</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
