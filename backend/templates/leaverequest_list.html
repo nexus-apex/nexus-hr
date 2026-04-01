@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Leaverequests | NexusHR{% endblock %}
+{% block page_title %}Leaverequests{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+  <form class="search-bar" method="get" style="flex:1;margin-bottom:0">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search leaverequests...">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Leave Type</option>
+      <option value="casual" {% if status_filter == 'casual' %}selected{% endif %}>Casual</option>
+      <option value="sick" {% if status_filter == 'sick' %}selected{% endif %}>Sick</option>
+      <option value="earned" {% if status_filter == 'earned' %}selected{% endif %}>Earned</option>
+      <option value="maternity" {% if status_filter == 'maternity' %}selected{% endif %}>Maternity</option>
+      <option value="comp_off" {% if status_filter == 'comp_off' %}selected{% endif %}>Comp Off</option>
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+  </form>
+  <a href="/leaverequests/create/" class="btn btn-primary">+ New LeaveRequest</a>
+</div>
+
+<div class="card">
+  {% if records %}
+  <table>
+    <thead>
+      <tr><th>Employee Name</th><th>Leave Type</th><th>Start Date</th><th>End Date</th><th>Status</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td><a href="/leaverequests/{{ r.pk }}/edit/"><strong>{{ r.employee_name }}</strong></a></td>
+        <td><span class="badge badge-blue">{{ r.get_leave_type_display }}</span></td>
+        <td style="color:var(--muted)">{{ r.start_date|date:"M d, Y"|default:"-" }}</td>
+        <td style="color:var(--muted)">{{ r.end_date|date:"M d, Y"|default:"-" }}</td>
+        <td><span class="badge badge-blue">{{ r.get_status_display }}</span></td>
+        <td class="actions">
+          <a href="/leaverequests/{{ r.pk }}/edit/" class="btn btn-primary btn-sm">Edit</a>
+          <form method="post" action="/leaverequests/{{ r.pk }}/delete/" style="display:inline" onsubmit="return confirm('Delete?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Del</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No leaverequests found.</p>
+    <a href="/leaverequests/create/" class="btn btn-primary" style="margin-top:1rem">Create LeaveRequest</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
