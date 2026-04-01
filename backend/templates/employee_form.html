@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Edit{% else %}New{% endif %} Employee | NexusHR{% endblock %}
+{% block page_title %}{% if editing %}Edit Employee{% else %}New Employee{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:750px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" name="name" value="{{ record.name|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" value="{{ record.email|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Department</label>
+        <input type="text" name="department" value="{{ record.department|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Designation</label>
+        <input type="text" name="designation" value="{{ record.designation|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Salary</label>
+        <input type="number" step="0.01" name="salary" value="{{ record.salary|default:'0' }}">
+      </div>
+      <div class="form-group">
+        <label>Join Date</label>
+        <input type="date" name="join_date" value="{{ record.join_date|date:'Y-m-d'|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status">
+          <option value="active" {% if record.status == 'active' %}selected{% endif %}>Active</option>
+          <option value="on_leave" {% if record.status == 'on_leave' %}selected{% endif %}>On Leave</option>
+          <option value="resigned" {% if record.status == 'resigned' %}selected{% endif %}>Resigned</option>
+          <option value="terminated" {% if record.status == 'terminated' %}selected{% endif %}>Terminated</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="text" name="phone" value="{{ record.phone|default:'' }}">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button type="submit" class="btn btn-primary">{% if editing %}Update{% else %}Create{% endif %} Employee</button>
+      <a href="/employees/" class="btn" style="background:var(--border);color:var(--text)">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
