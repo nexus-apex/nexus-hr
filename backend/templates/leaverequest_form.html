@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Edit{% else %}New{% endif %} LeaveRequest | NexusHR{% endblock %}
+{% block page_title %}{% if editing %}Edit LeaveRequest{% else %}New LeaveRequest{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:750px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group">
+        <label>Employee Name</label>
+        <input type="text" name="employee_name" value="{{ record.employee_name|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Leave Type</label>
+        <select name="leave_type">
+          <option value="casual" {% if record.leave_type == 'casual' %}selected{% endif %}>Casual</option>
+          <option value="sick" {% if record.leave_type == 'sick' %}selected{% endif %}>Sick</option>
+          <option value="earned" {% if record.leave_type == 'earned' %}selected{% endif %}>Earned</option>
+          <option value="maternity" {% if record.leave_type == 'maternity' %}selected{% endif %}>Maternity</option>
+          <option value="comp_off" {% if record.leave_type == 'comp_off' %}selected{% endif %}>Comp Off</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Start Date</label>
+        <input type="date" name="start_date" value="{{ record.start_date|date:'Y-m-d'|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>End Date</label>
+        <input type="date" name="end_date" value="{{ record.end_date|date:'Y-m-d'|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status">
+          <option value="pending" {% if record.status == 'pending' %}selected{% endif %}>Pending</option>
+          <option value="approved" {% if record.status == 'approved' %}selected{% endif %}>Approved</option>
+          <option value="rejected" {% if record.status == 'rejected' %}selected{% endif %}>Rejected</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Reason</label>
+      <textarea name="reason">{{ record.reason|default:'' }}</textarea>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button type="submit" class="btn btn-primary">{% if editing %}Update{% else %}Create{% endif %} LeaveRequest</button>
+      <a href="/leaverequests/" class="btn" style="background:var(--border);color:var(--text)">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
